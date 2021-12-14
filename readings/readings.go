@@ -30,7 +30,7 @@ type CompensatedReading struct {
 	Humidity    float64
 }
 
-func Read(methodCall func(uint16) uint32) UncompensatedReading {
+func Read(methodCall func(uint8) uint32) UncompensatedReading {
 	uncompRead := UncompensatedReading{}
 
 	uncompRead.Temperature = (methodCall(T1Addr)<<16 | methodCall(T2Addr)<<8 | methodCall(T3Addr)) >> 4

@@ -44,7 +44,7 @@ type Params struct {
 	E4, E5, E6 int8
 }
 
-func SetCalParams(methodCall func(uint16) uint16) {
+func SetCalParams(methodCall func(uint8) uint16) {
 	CalParams = Params{}
 	CalParams.DigT1 = methodCall(DigT1Addr)
 	CalParams.DigT2 = int16(methodCall(DigT2Addr))
