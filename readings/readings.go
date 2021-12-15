@@ -1,7 +1,7 @@
 package readings
 
 import (
-	"bme280Reader/calibration"
+	"github.com/RainerGevers/bme280Reader/calibration"
 	"math"
 )
 
