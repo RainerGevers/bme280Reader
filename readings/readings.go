@@ -41,8 +41,11 @@ func Read(methodCall func(uint8) uint32) UncompensatedReading {
 }
 
 func CalcTFine(temp uint32) float64 {
-	v1 := (float64(temp)/16384.0 - float64(calibration.CalParams.DigT1)/1024.0) * float64(calibration.CalParams.DigT2)
-	v2 := math.Pow(float64(float64(temp)/131072.0-float64(calibration.CalParams.DigT1)/8192.0), 2.0) * float64(calibration.CalParams.DigT3)
+	digT1 := calibration.CalParams.DigT1
+	digT2 := calibration.CalParams.DigT2
+	digT3 := calibration.CalParams.DigT3
+	v1 := (float64(temp)/16384.0 - float64(digT1)/1024.0) * float64(digT2)
+	v2 := math.Pow((float64(temp)/131072.0-float64(digT1)/8192.0), 2) * float64(digT3)
 	return v1 + v2
 }
 
@@ -54,12 +57,22 @@ func CalcHumidity(humidity uint32, tFine float64) float64 {
 }
 
 func CalcPressure(pressure uint32, tFine float64) float64 {
+	digP1 := calibration.CalParams.DigP1
+	digP2 := calibration.CalParams.DigP2
+	digP3 := calibration.CalParams.DigP3
+	digP4 := calibration.CalParams.DigP4
+	digP5 := calibration.CalParams.DigP5
+	digP6 := calibration.CalParams.DigP6
+	digP7 := calibration.CalParams.DigP7
+	digP8 := calibration.CalParams.DigP8
+	digP9 := calibration.CalParams.DigP9
+
 	v1 := (tFine / 2.0) - 64000.0
-	v2 := v1 * v1 * (float64(calibration.CalParams.DigP6) / 32768.0)
-	v2 = v2 + v1 + (float64(calibration.CalParams.DigP5) * 2.0)
-	v2 = (v2 / 4.0) + (float64(calibration.CalParams.DigP4) * 65536.0)
-	v1 = ((float64(calibration.CalParams.DigP3)*v1*v1)/524288.0 + (float64(calibration.CalParams.DigP2) * v1)) / 524288.0
-	v1 = (1.0 + v1/32768.0) * float64(calibration.CalParams.DigP1)
+	v2 := (v1 * v1 * float64(digP6)) / 32768.0
+	v2 = v2 + (v1 * float64(digP5) * 2.0)
+	v2 = (v2 / 4.0) + (float64(digP4) * 65536.0)
+	v1 = ((float64(digP3)*v1*v1)/524288.0 + (float64(digP2) * v1)) / 524288.0
+	v1 = (1.0 + v1/32768.0) * float64(digP1)
 
 	if v1 == 0.0 {
 		return 0.0
@@ -67,11 +80,11 @@ func CalcPressure(pressure uint32, tFine float64) float64 {
 
 	res := 1048576.0 - float64(pressure)
 	res = ((res - v2/4096.0) * 6250.0) / v1
-	v1 = (float64(calibration.CalParams.DigP9) * res * res) / 2147483648.0
-	v2 = res * (float64(calibration.CalParams.DigP8) / 32768.0)
-	res = res + (v1+v2+float64(calibration.CalParams.DigP7))/16.0
+	v1 = (float64(digP9) * res * res) / 2147483648.0
+	v2 = (res * float64(digP8)) / 32768.0
+	res = res + (v1+v2+float64(digP7))/16.0
 
-	return res
+	return res / 100
 }
 
 func CompensateReading(uncompedReading UncompensatedReading) CompensatedReading {

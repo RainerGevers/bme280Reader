@@ -36,39 +36,39 @@ type Params struct {
 
 	DigH1 uint8
 	DigH2 int16
-	DigH3 int8
-	DigH4 int8
+	DigH3 uint8
+	DigH4 int16
 	DigH5 int8
 	DigH6 int8
 
-	E4, E5, E6 int8
+	E4, E5, E6 uint16
 }
 
 func SetCalParams(methodCall func(uint8) uint16) {
 	CalParams = Params{}
-	CalParams.DigT1 = methodCall(DigT1Addr)
-	CalParams.DigT2 = int16(methodCall(DigT2Addr))
-	CalParams.DigT3 = int16(methodCall(DigT3Addr))
+	CalParams.DigT1 = methodCall(DigT1Addr+1)<<8 | methodCall(DigT1Addr)
+	CalParams.DigT2 = int16(methodCall(DigT2Addr+1)<<8 | methodCall(DigT2Addr))
+	CalParams.DigT3 = int16(methodCall(DigT3Addr+1)<<8 | methodCall(DigT3Addr))
 
-	CalParams.DigP1 = methodCall(DigP1Addr)
-	CalParams.DigP2 = int16(methodCall(DigP2Addr))
-	CalParams.DigP3 = int16(methodCall(DigP3Addr))
-	CalParams.DigP4 = int16(methodCall(DigP4Addr))
-	CalParams.DigP5 = int16(methodCall(DigP5Addr))
-	CalParams.DigP6 = int16(methodCall(DigP6Addr))
-	CalParams.DigP7 = int16(methodCall(DigP7Addr))
-	CalParams.DigP8 = int16(methodCall(DigP8Addr))
-	CalParams.DigP9 = int16(methodCall(DigP9Addr))
+	CalParams.DigP1 = methodCall(DigP1Addr+1)<<8 | methodCall(DigP1Addr)
+	CalParams.DigP2 = int16(methodCall(DigP2Addr+1)<<8 | methodCall(DigP2Addr))
+	CalParams.DigP3 = int16(methodCall(DigP3Addr+1)<<8 | methodCall(DigP3Addr))
+	CalParams.DigP4 = int16(methodCall(DigP4Addr+1)<<8 | methodCall(DigP4Addr))
+	CalParams.DigP5 = int16(methodCall(DigP5Addr+1)<<8 | methodCall(DigP5Addr))
+	CalParams.DigP6 = int16(methodCall(DigP6Addr+1)<<8 | methodCall(DigP6Addr))
+	CalParams.DigP7 = int16(methodCall(DigP7Addr+1)<<8 | methodCall(DigP7Addr))
+	CalParams.DigP8 = int16(methodCall(DigP8Addr+1)<<8 | methodCall(DigP8Addr))
+	CalParams.DigP9 = int16(methodCall(DigP9Addr+1)<<8 | methodCall(DigP9Addr))
 
 	CalParams.DigH1 = uint8(methodCall(DigH1Addr))
-	CalParams.DigH2 = int16(methodCall(DigH2Addr))
-	CalParams.DigH3 = int8(methodCall(DigH3Addr))
+	CalParams.DigH2 = int16(methodCall(DigH2Addr+1)<<8 | methodCall(DigH2Addr))
+	CalParams.DigH3 = uint8(methodCall(DigH3Addr))
 
-	CalParams.E4 = int8(methodCall(E4Addr))
-	CalParams.E5 = int8(methodCall(E5Addr))
-	CalParams.E6 = int8(methodCall(E6Addr))
+	CalParams.E4 = methodCall(E4Addr)
+	CalParams.E5 = methodCall(E5Addr)
+	CalParams.E6 = methodCall(E6Addr)
 
-	CalParams.DigH4 = CalParams.E4<<4 | CalParams.E5&0x0F
-	CalParams.DigH5 = ((CalParams.E5 >> 4) & 0x0F) | (CalParams.E6 << 4)
+	CalParams.DigH4 = int16(CalParams.E4<<4 | (CalParams.E5 & 0x0F))
+	CalParams.DigH5 = int8(((CalParams.E5 >> 4) & 0x0F) | (CalParams.E6 << 4))
 	CalParams.DigH6 = int8(methodCall(DigH6Addr))
 }
