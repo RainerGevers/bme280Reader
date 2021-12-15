@@ -1,3 +1,3 @@
-module bme280Reader
+module github.com/RainerGevers/bme280Reader
 
 go 1.17
